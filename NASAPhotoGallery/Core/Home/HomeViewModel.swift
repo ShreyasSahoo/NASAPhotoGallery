@@ -17,27 +17,34 @@ final class HomeViewModel: ObservableObject {
     @Published var isFavourite = false
 
     private let service: APODService
+    private var favouriteStore: FavouriteStore?
 
     init(service: APODService = ProductionAPODService()) {
         self.service = service
     }
 
+    func configure(favouriteStore: FavouriteStore) {
+        self.favouriteStore = favouriteStore
+    }
+
     func load() async {
         isLoading = true
-        errorMessage = nil
         defer { isLoading = false }
 
         do {
-            apod = try await service.getAPOD(for: selectedDate)
+            let apod = try await service.getAPOD(for: selectedDate)
+            self.apod = apod
+
+            if let store = favouriteStore {
+                isFavourite = store.isFavourite(date: apod.date)
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
     func toggleFavourite() {
-        isFavourite.toggle()
+        guard let apod, let store = favouriteStore else { return }
+        isFavourite = store.toggle(apod)
     }
-
-    
-
 }

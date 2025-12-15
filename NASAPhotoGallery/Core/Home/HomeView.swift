@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var viewModel: HomeViewModel = .init()
+    @Environment(\.modelContext) private var context
+    @StateObject private var viewModel = HomeViewModel()
 
     @State private var showDatePicker = false
 
@@ -33,7 +34,8 @@ struct HomeView: View {
                 datePickerSheet
             }
             .task {
-                guard viewModel.apod == nil else { return }
+                let store = FavouriteStore(context: context)
+                viewModel.configure(favouriteStore: store)
                 await viewModel.load()
             }
     }
@@ -43,10 +45,7 @@ struct HomeView: View {
         if viewModel.isLoading {
             LoadingSkeletonView()
         } else if let apod = viewModel.apod {
-            LoadedHomeContent(
-                isFavourite: $viewModel.isFavourite, apod: apod) {
-                    viewModel.toggleFavourite()
-                }
+            LoadedHomeContent(viewModel: viewModel, apod: apod)
         } else if let error = viewModel.errorMessage {
             ErrorView(message: error) {
                 Task { await viewModel.load() }

@@ -8,8 +8,28 @@
 import SwiftUI
 
 struct FavouritesView: View {
+
+    @Environment(\.modelContext) private var context
+    @State private var favourites: [APOD] = []
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: [
+                    GridItem(.flexible()),
+                    GridItem(.flexible())
+                ]) {
+                    ForEach(favourites) { apod in
+                        APODGridCell(apod: apod)
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("Favourites")
+            .onAppear {
+                favourites = FavouriteStore(context: context).fetchAll()
+            }
+        }
     }
 }
 
