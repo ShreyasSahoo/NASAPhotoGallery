@@ -10,34 +10,45 @@ import SwiftUI
 
 struct LoadedHomeContent: View {
 
-    @Binding var isFavourite: Bool
-
+    @ObservedObject var viewModel: HomeViewModel
+    @State private var showFullScreenImage: Bool = false
     let apod: APOD
-    let onFavouriteTap: () -> Void
 
     var body: some View {
         VStack(spacing: 20) {
 
             // MARK: Image with Favourite Overlay
-            if let url = URL(string: apod.displayImageURL) {
+            if apod.hasDisplayableMedia,
+               let url = URL(string: apod.displayImageURL) {
                 CustomAsyncImageView(url: url)
                     .id(url)
                     .overlay(alignment: .bottomTrailing) {
                         favouriteButton
                     }
+                    .onTapGesture {
+                        showFullScreenImage = true
+                    }
+            } else {
+                MissingMediaView()
             }
 
             // MARK: Description Card
-            DescriptionCardView(apod: apod)
+            DescriptionCardView(
+                title: apod.title,
+                date: apod.date,
+                explanation: apod.explanation
+            )
+        }
+        .fullScreenCover(isPresented: $showFullScreenImage) {
+            FullScreenImageView(apod: apod)
         }
     }
 
     private var favouriteButton: some View {
         Button {
-            //TODO: Add favourite logic
-            isFavourite.toggle()
+            viewModel.toggleFavourite()
         } label: {
-            Image(systemName: isFavourite ? "heart.fill" : "heart")
+            Image(systemName: viewModel.isFavourite ? "heart.fill" : "heart")
                 .font(.title2)
                 .foregroundColor(Theme.favourite)
                 .padding(8)
@@ -46,11 +57,4 @@ struct LoadedHomeContent: View {
         }
         .padding(8)
     }
-}
-
-#Preview {
-        LoadedHomeContent(isFavourite: .constant(false), apod: .mockImage) {
-
-        }
-    .padding()
 }
