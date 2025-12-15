@@ -17,22 +17,25 @@ struct HomeView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                titleSection
-                content
+            ScrollView {
+                VStack(spacing: 20) {
+                    titleSection
+                        .zIndex(1)
+                    content
+                        .zIndex(0)
+                }
+                .animation(.easeInOut, value: viewModel.isLoading)
             }
-            .animation(.easeInOut, value: viewModel.isLoading)
-        }
-        .padding()
-        .background(Theme.backgroundPrimary)
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showDatePicker) {
-            datePickerSheet
-        }
-        .task {
-            await viewModel.load()
-        }
+            .padding()
+            .background(Theme.backgroundPrimary)
+            .scrollIndicators(.hidden)
+            .sheet(isPresented: $showDatePicker) {
+                datePickerSheet
+            }
+            .task {
+                guard viewModel.apod == nil else { return }
+                await viewModel.load()
+            }
     }
 
     @ViewBuilder
@@ -87,7 +90,7 @@ struct HomeView: View {
         VStack(spacing: 16) {
 
             Text("Select Date")
-                .font(.headline)
+                .font(.title2)
 
             DatePicker(
                 "",
@@ -98,14 +101,20 @@ struct HomeView: View {
             .datePickerStyle(.graphical)
 
             Button("Done") {
-                showDatePicker = false
+
+                defer {
+                    showDatePicker = false
+                }
+                Task {
+                    await viewModel.load()
+                }
                 // later → trigger ViewModel reload
             }
             .font(.headline)
             .padding(.bottom)
         }
         .padding()
-        .presentationDetents([.medium])
+        .presentationDetents([.fraction(0.75)])
     }
 
 }
