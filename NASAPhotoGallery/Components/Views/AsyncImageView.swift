@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AsyncImageView: View {
 
-    var url: URL = URL(string: APOD.mock.imageURL)!
+    var url: URL = URL(string: APOD.mockImage.displayImageURL)!
     var height: CGFloat = 250
     var cornerRadius: CGFloat = 16
 
@@ -21,6 +21,10 @@ struct AsyncImageView: View {
                     .fill(Theme.cardBackground)
                     .frame(height: height)
                     .shimmer()
+                    .overlay {
+                        ProgressView()
+                            .scaleEffect(2)
+                    }
             case .success(let image):
                 image
                     .resizable()
@@ -28,6 +32,7 @@ struct AsyncImageView: View {
                     .frame(height: height)
                     .clipped()
             case .failure:
+                // failure image
                 Color.gray.frame(height: height)
             @unknown default:
                 EmptyView()
@@ -40,6 +45,8 @@ struct AsyncImageView: View {
 #Preview {
     VStack {
         AsyncImageView()
+
+        AsyncImageView(url: URL(string: APOD.mockVideo.displayImageURL)!)
 
         AsyncImageView(height: 100, cornerRadius: 8)
 
