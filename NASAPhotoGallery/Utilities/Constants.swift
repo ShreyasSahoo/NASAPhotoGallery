@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+struct Constants {
+    static let baseURL = "https://api.nasa.gov/planetary/apod"
+}
