@@ -19,6 +19,7 @@ struct APOD: Codable, Hashable, Identifiable {
     let thumbnailURL: String?
 
     var id: String { date }
+
     var displayImageURL: String {
         switch mediaType {
         case .image:
@@ -27,6 +28,10 @@ struct APOD: Codable, Hashable, Identifiable {
             // put a missing image for optional thumbnail
             return thumbnailURL ?? url
         }
+    }
+
+    var hasDisplayableMedia: Bool {
+        mediaType == .image && !url.isEmpty
     }
 
 

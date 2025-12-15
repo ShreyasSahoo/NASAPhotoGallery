@@ -16,10 +16,17 @@ final class URLSessionHTTPClient: HTTPClient {
             throw NetworkError.invalidResponse
         }
 
-        guard 200..<300 ~= httpResponse.statusCode else {
+        switch httpResponse.statusCode {
+        case 200..<300:
+            return data
+        case 401:
+            throw NetworkError.serverErrorMessage("Invalid API key.")
+        case 429:
+            throw NetworkError.serverErrorMessage("Too many requests. Please try again later.")
+        case 500..<600:
             throw NetworkError.serverError(httpResponse.statusCode)
+        default:
+            throw NetworkError.invalidResponse
         }
-
-        return data
     }
 }

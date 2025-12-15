@@ -24,8 +24,28 @@ final class APODAPI {
     func fetch(endpoint: APODEndpoint) async throws -> APOD {
         let request = try endpoint.makeRequest()
         let data = try await client.send(request)
+
+        if let apiError = try? decoder.decode(APODAPIErrorResponse.self, from: data) {
+            throw NetworkError.serverErrorMessage(apiError.error.message)
+        }
+
         do {
             return try decoder.decode(APOD.self, from: data)
+        } catch {
+            throw NetworkError.decodingFailed
+        }
+    }
+
+    func fetchRange(endpoint: APODEndpoint) async throws -> [APOD] {
+        let request = try endpoint.makeRequest()
+        let data = try await client.send(request)
+
+        if let apiError = try? decoder.decode(APODAPIErrorResponse.self, from: data) {
+            throw NetworkError.serverErrorMessage(apiError.error.message)
+        }
+
+        do {
+            return try decoder.decode([APOD].self, from: data)
         } catch {
             throw NetworkError.decodingFailed
         }

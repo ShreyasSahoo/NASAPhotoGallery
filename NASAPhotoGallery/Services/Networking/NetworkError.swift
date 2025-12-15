@@ -12,6 +12,7 @@ enum NetworkError: LocalizedError {
     case invalidResponse
     case decodingFailed
     case serverError(Int)
+    case serverErrorMessage(String)
 
     var errorDescription: String? {
         switch self {
@@ -23,6 +24,8 @@ enum NetworkError: LocalizedError {
             return "Failed to decode response"
         case .serverError(let code):
             return "Server error (\(code))"
-        }
+        case .serverErrorMessage(let message):
+                return message
+            }
     }
 }

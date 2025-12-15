@@ -10,4 +10,5 @@ import Foundation
 
 protocol APODService {
     func getAPOD(for date: Date) async throws -> APOD
+    func getAPODs(from startDate: Date, to endDate: Date) async throws -> [APOD]
 }
