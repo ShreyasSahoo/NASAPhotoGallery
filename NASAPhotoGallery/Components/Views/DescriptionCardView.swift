@@ -9,25 +9,27 @@ import SwiftUI
 
 struct DescriptionCardView: View {
 
-    var apod: APOD = .mockImage
+    let title: String
+    let date: String
+    let explanation: String
     var cornerRadius: CGFloat = 10
     var backgroundColor: Color = Theme.cardBackground
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
 
-            Text(apod.title)
+            Text(title)
                 .font(.title3)
                 .fontWeight(.medium)
                 .foregroundColor(Theme.primaryText)
 
-            Text(apod.date)
+            Text(date)
                 .font(.caption)
                 .foregroundColor(Theme.secondaryText)
 
             Divider()
 
-            Text(apod.explanation)
+            Text(explanation)
                 .font(.body)
                 .foregroundColor(Theme.primaryText)
                 .lineSpacing(4)
@@ -41,10 +43,11 @@ struct DescriptionCardView: View {
 
 #Preview {
     VStack {
-        DescriptionCardView(apod: .mockVideo)
+
+        DescriptionCardView(title: APOD.mockImage.title, date: APOD.mockImage.date, explanation: APOD.mockImage.explanation)
             .padding(.horizontal, 8)
 
-        DescriptionCardView(cornerRadius: 24, backgroundColor: .yellow)
+        DescriptionCardView(title: APOD.mockVideo.title, date: APOD.mockVideo.date, explanation: APOD.mockVideo.explanation, cornerRadius: 24, backgroundColor: .yellow)
             .padding(.horizontal, 8)
     }
     .padding(8)

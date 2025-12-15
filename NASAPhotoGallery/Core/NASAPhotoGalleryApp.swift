@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct NASAPhotoGalleryApp: App {
@@ -13,5 +14,6 @@ struct NASAPhotoGalleryApp: App {
         WindowGroup {
             TabBarView()
         }
+        .modelContainer(for: [FavouriteAPODEntity.self])
     }
 }
