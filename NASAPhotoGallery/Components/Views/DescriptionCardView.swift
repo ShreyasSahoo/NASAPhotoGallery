@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DescriptionCardView: View {
 
-    var apod: APOD = .mock
+    var apod: APOD = .mockImage
     var cornerRadius: CGFloat = 10
     var backgroundColor: Color = Theme.cardBackground
 
@@ -41,7 +41,7 @@ struct DescriptionCardView: View {
 
 #Preview {
     VStack {
-        DescriptionCardView()
+        DescriptionCardView(apod: .mockVideo)
             .padding(.horizontal, 8)
 
         DescriptionCardView(cornerRadius: 24, backgroundColor: .yellow)

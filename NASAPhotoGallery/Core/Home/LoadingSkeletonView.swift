@@ -16,6 +16,10 @@ struct LoadingSkeletonView: View {
             RoundedRectangle(cornerRadius: 18)
                 .fill(Theme.cardBackground)
                 .frame(height: 250)
+                .overlay {
+                    ProgressView()
+                        .scaleEffect(2)
+                }
 
             // Description card skeleton
             VStack(alignment: .leading, spacing: 12) {

@@ -19,8 +19,9 @@ struct LoadedHomeContent: View {
         VStack(spacing: 20) {
 
             // MARK: Image with Favourite Overlay
-            if let url = URL(string: apod.imageURL) {
-                AsyncImageView(url: url)
+            if let url = URL(string: apod.displayImageURL) {
+                CustomAsyncImageView(url: url)
+                    .id(url)
                     .overlay(alignment: .bottomTrailing) {
                         favouriteButton
                     }
@@ -45,4 +46,11 @@ struct LoadedHomeContent: View {
         }
         .padding(8)
     }
+}
+
+#Preview {
+        LoadedHomeContent(isFavourite: .constant(false), apod: .mockImage) {
+
+        }
+    .padding()
 }

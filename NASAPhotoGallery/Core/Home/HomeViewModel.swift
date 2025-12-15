@@ -7,6 +7,7 @@
 import SwiftUI
 import Combine
 
+@MainActor
 final class HomeViewModel: ObservableObject {
 
     @Published var selectedDate: Date = .now
@@ -15,16 +16,21 @@ final class HomeViewModel: ObservableObject {
     @Published var errorMessage: String? = nil
     @Published var isFavourite = false
 
+    private let service: APODService
+
+    init(service: APODService = ProductionAPODService()) {
+        self.service = service
+    }
+
     func load() async {
         isLoading = true
         errorMessage = nil
         defer { isLoading = false }
 
         do {
-            try await Task.sleep(for: .seconds(2))
-            apod = .mock
+            apod = try await service.getAPOD(for: selectedDate)
         } catch {
-            errorMessage = "Failed to load APOD"
+            errorMessage = error.localizedDescription
         }
     }
 
